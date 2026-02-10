@@ -38,9 +38,9 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en" className="dark" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning>
         <body
-          className={`${inter.variable} bg-[#000000] text-[#ffffff] antialiased`}
+          className={`${inter.variable} bg-white text-zinc-900 antialiased`}
           suppressHydrationWarning
         >
           <SafeArea>{children}</SafeArea>

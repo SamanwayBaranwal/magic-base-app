@@ -21,15 +21,15 @@ export default function Success() {
         >
           <CheckCircle2 className="w-12 h-12 text-[#0052ff]" strokeWidth={2} />
         </motion.div>
-        <h1 className="font-black text-4xl text-white uppercase tracking-tighter">
+        <h1 className="font-black text-4xl text-[#0052ff] uppercase tracking-tighter">
           Day 1 Complete
         </h1>
-        <p className="text-zinc-400 text-lg">
+        <p className="text-zinc-600 text-lg">
           See you tomorrow.
         </p>
         <Link
           href="/"
-          className="magic-button-primary block w-full hover:bg-[#0046e0]"
+          className="magic-button-primary block w-full"
         >
           Back to home
         </Link>

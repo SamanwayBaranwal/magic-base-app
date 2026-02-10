@@ -26,9 +26,10 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     const init = async () => {
       const isInApp = await sdk.isInMiniApp();
       if (isInApp) {
+        // Call ready() immediately to hide splash screen
+        await sdk.actions.ready();
         const ctx = await sdk.context;
         setContext(ctx);
-        await sdk.actions.ready();
         setIsReady(true);
       }
     };

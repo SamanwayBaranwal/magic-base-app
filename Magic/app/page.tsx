@@ -42,7 +42,7 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
     import('canvas-confetti').then(({ default: confetti }) => {
       const duration = 2.5 * 1000;
       const end = Date.now() + duration;
-      const colors = ['#0052ff', '#ffffff', '#a1a1a1'];
+      const colors = ['#0052ff', '#F0F5FF', '#ffffff'];
       const frame = () => {
         confetti({
           particleCount: 3,
@@ -61,7 +61,7 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       frame();
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black p-6"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white p-6"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
     >
@@ -90,21 +90,21 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
         transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.1 }}
       >
         <motion.div
-          className="w-24 h-24 rounded-2xl border-4 border-zinc-900 bg-zinc-950 flex items-center justify-center shadow-[8px_8px_0px_0px_#0052ff]"
+          className="w-24 h-24 rounded-2xl border-4 border-[#F0F5FF] bg-white flex items-center justify-center shadow-lg"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.2 }}
         >
           <CheckCircle2 className="w-12 h-12 text-[#0052ff]" strokeWidth={2} />
         </motion.div>
-        <h2 className="font-black text-4xl text-white uppercase tracking-tighter">
+        <h2 className="font-black text-4xl text-[#0052ff] uppercase tracking-tighter">
           Day 1 Complete
         </h2>
-        <p className="text-zinc-400 text-lg">Taking you there...</p>
+        <p className="text-zinc-600 text-lg">Taking you there...</p>
       </motion.div>
 
       <div className="absolute bottom-8 left-6 right-6 max-w-[400px] w-full mx-auto">
-        <div className="h-2 rounded-full bg-zinc-900 border-2 border-zinc-800 overflow-hidden">
+        <div className="h-2 rounded-full bg-[#F0F5FF] border-2 border-[#0052ff]/10 overflow-hidden">
           <motion.div
             className="h-full bg-[#0052ff] rounded-full"
             initial={{ width: '0%' }}
@@ -119,16 +119,12 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
 }
 
 function ProfileSummaryCard({ fid }: { fid: number | null }) {
-  const [displayName, setDisplayName] = useState<string | null>(null);
-  const [pfp_url, setPfp_url] = useState<string | null>(null);
-  const [bio, setBio] = useState<string | null>(null);
+  const [profileData, setProfileData] = useState<{ displayName: string | null; pfpUrl: string | null; bio: string | null } | null>(null);
   const [loading, setLoading] = useState(!!fid);
 
   useEffect(() => {
     if (!fid) {
-      setDisplayName('Guest Builder');
-      setPfp_url(null);
-      setBio('Start your journey to build in public');
+      setProfileData(null);
       setLoading(false);
       return;
     }
@@ -136,25 +132,31 @@ function ProfileSummaryCard({ fid }: { fid: number | null }) {
     let cancelled = false;
     const load = async () => {
       setLoading(true);
+      console.log('[ProfileSummaryCard] Fetching profile for FID:', fid);
       try {
-        const res = await fetch(`/api/profile?fid=${encodeURIComponent(fid)}`);
+        const apiUrl = `/api/profile?fid=${encodeURIComponent(fid)}`;
+        const res = await fetch(apiUrl);
         const data = await res.json();
+        console.log('[ProfileSummaryCard] API Response Data:', data);
+
         if (!cancelled) {
-          setDisplayName(typeof data.displayName === 'string' ? data.displayName : null);
-          setPfp_url(typeof data.pfp_url === 'string' ? data.pfp_url : null);
-          setBio(typeof data.bio === 'string' ? data.bio : null);
+          console.log('FINAL PROFILE DATA:', data);
+          setProfileData({
+            displayName: data.displayName,
+            pfpUrl: data.pfp_url || data.pfpUrl,
+            bio: data.bio
+          });
         }
-      } catch {
+      } catch (error) {
+        console.error('[ProfileSummaryCard] Error fetching profile:', error);
         if (!cancelled) {
-          setDisplayName('Guest Builder');
-          setPfp_url(null);
-          setBio('Error loading profile');
+          setProfileData(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
-    
+
     load();
     return () => {
       cancelled = true;
@@ -162,40 +164,46 @@ function ProfileSummaryCard({ fid }: { fid: number | null }) {
   }, [fid]);
 
   return (
-    <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800 rounded-2xl p-4 w-full mb-6">
+    <div className="profile-card w-full mb-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {pfp_url ? (
-            <div className="relative">
+          {loading ? (
+            <div className="w-12 h-12 rounded-full border-2 border-[#0052ff]/20 bg-white flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0052ff]"></div>
+            </div>
+          ) : profileData?.pfpUrl ? (
+            <div className="relative flex-shrink-0 w-12 h-12">
               <img
-                src={pfp_url}
-                alt={displayName || 'Avatar'}
-                className="w-12 h-12 rounded-full border-2 border-[#0052ff] object-cover"
+                src={profileData.pfpUrl}
+                alt={profileData.displayName || 'Avatar'}
+                className="w-full h-full rounded-full border-2 border-[#0052ff] object-cover block"
+                width={48}
+                height={48}
               />
             </div>
           ) : (
-            <div className="w-12 h-12 rounded-full border-2 border-[#0052ff] bg-zinc-800 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full border-2 border-[#0052ff] bg-white flex items-center justify-center">
               <span className="text-zinc-400 text-sm">👤</span>
             </div>
           )}
           <div>
-            <p className="text-sm font-semibold text-white">
-              {loading ? 'Loading...' : displayName || 'Guest Builder'}
+            <p className="text-sm font-semibold text-zinc-900">
+              {loading ? 'Loading...' : profileData?.displayName || 'Guest Builder'}
             </p>
-            <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">
-              {loading ? 'Loading...' : bio || 'Start your journey to build in public'}
+            <p className="text-xs text-zinc-600 mt-0.5 line-clamp-1">
+              {loading ? 'Fetching profile...' : profileData?.bio || 'Start your journey to build in public'}
             </p>
           </div>
         </div>
-        {fid && (
-          <span className="bg-[#0052ff] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+        {fid && !loading && (
+          <span className="badge-verified">
             Verified
           </span>
         )}
       </div>
-      {fid && (
-        <p className="text-xs text-zinc-400 mt-3">
-          Daily Streak: <span className="font-semibold text-white">0 days</span>
+      {fid && !loading && (
+        <p className="text-xs text-zinc-600 mt-3">
+          Daily Streak: <span className="font-semibold text-[#0052ff]">0 days</span>
         </p>
       )}
     </div>
@@ -212,8 +220,26 @@ export default function MagicHome() {
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('User Context:', context);
+    console.log('Is Ready:', isReady);
+    console.log('Context User FID:', context?.user?.fid);
+  }, [context, isReady]);
+
   const inMiniApp = isReady && context;
-  const fidForProfile = context?.user?.fid;
+
+  // Use actual user FID from context
+  const fidToUse = context?.user?.fid;
+
+  // Log the FID being used
+  useEffect(() => {
+    if (fidToUse) {
+      console.log('Fetching profile for FID:', fidToUse);
+    } else {
+      console.log('Waiting for user context/FID...');
+    }
+  }, [fidToUse]);
 
   useEffect(() => {
     if (inMiniApp && phase === 'PHASE_0') setPhase('PHASE_1_IDENTITY');
@@ -264,23 +290,23 @@ export default function MagicHome() {
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Sparkles className="w-8 h-8 text-[#0052ff]" strokeWidth={1.5} />
-              <h1 className="font-black text-4xl text-white uppercase tracking-tighter">
+              <h1 className="font-black text-4xl text-[#0052ff] uppercase tracking-tighter">
                 {farcasterConfig.miniapp.name}
               </h1>
             </div>
-            <p className="text-zinc-400 text-lg">
+            <p className="text-zinc-600 text-lg">
               The first high-stakes Accountability Protocol on Base.
             </p>
           </div>
           <div className="magic-card rounded-2xl">
-            <p className="text-zinc-400 mb-6 text-center">
+            <p className="text-zinc-600 mb-6 text-center">
               Open this Mini App in Warpcast to enter.
             </p>
             <a
               href="https://warpcast.com/~/add-cast-action"
               target="_blank"
               rel="noopener noreferrer"
-              className="magic-button-primary block w-full hover:bg-[#0046e0]"
+              className="magic-button-primary block w-full"
             >
               Open in Warpcast
             </a>
@@ -304,7 +330,7 @@ export default function MagicHome() {
   return (
     <main className="screen-center">
       <div className="magic-container">
-        <ProfileSummaryCard fid={fidForProfile} />
+        <ProfileSummaryCard fid={fidToUse ?? null} />
         <AnimatePresence mode="wait">
           {phase === 'PHASE_1_IDENTITY' && (
             <motion.section
@@ -315,11 +341,11 @@ export default function MagicHome() {
               <div className="w-full text-center mb-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Sparkles className="w-8 h-8 text-[#0052ff]" strokeWidth={1.5} />
-                  <h1 className="font-black text-5xl text-white tracking-tighter">
+                  <h1 className="font-black text-5xl text-[#0052ff] tracking-tighter">
                     {farcasterConfig.miniapp.name}
                   </h1>
                 </div>
-                <p className="text-zinc-400 text-lg">Who are you trying to become?</p>
+                <p className="text-zinc-600 text-lg">Who are you trying to become?</p>
               </div>
               <div className="w-full space-y-4">
                 {ROLES.map((r, i) => (
@@ -329,10 +355,10 @@ export default function MagicHome() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * STAGGER, type: 'spring', stiffness: 300, damping: 30 }}
                     onClick={() => { setRole(r.id); goToLevel(); }}
-                    className="magic-card w-full text-left rounded-2xl hover:border-[#0052ff] transition-all"
+                    className="magic-card w-full text-left rounded-2xl"
                   >
-                    <div className="font-bold text-xl text-white">{r.title}</div>
-                    <div className="text-xs text-zinc-500 mt-1">{r.desc}</div>
+                    <div className="font-bold text-xl text-zinc-900">{r.title}</div>
+                    <div className="text-xs text-zinc-600 mt-1">{r.desc}</div>
                   </motion.button>
                 ))}
               </div>
@@ -348,15 +374,15 @@ export default function MagicHome() {
               <button
                 type="button"
                 onClick={goBackToIdentity}
-                className="text-zinc-400 text-sm mb-4 self-start hover:text-white transition-colors"
+                className="text-zinc-600 text-sm mb-4 self-start hover:text-[#0052ff] transition-colors"
               >
                 ← Back
               </button>
               <div className="w-full text-center mb-4">
-                <h1 className="font-black text-3xl text-white uppercase tracking-tighter mb-2">
+                <h1 className="font-black text-3xl text-[#0052ff] uppercase tracking-tighter mb-2">
                   Level Check
                 </h1>
-                <p className="text-zinc-400 text-lg">Where do you really stand?</p>
+                <p className="text-zinc-600 text-lg">Where do you really stand?</p>
               </div>
               <div className="w-full space-y-4">
                 {LEVELS.map((l, i) => (
@@ -366,10 +392,10 @@ export default function MagicHome() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * STAGGER, type: 'spring', stiffness: 300, damping: 30 }}
                     onClick={() => { setLevel(l.id); goToTask(); }}
-                    className="magic-card w-full text-left rounded-2xl hover:border-[#0052ff] transition-all"
+                    className="magic-card w-full text-left rounded-2xl"
                   >
-                    <div className="font-bold text-xl text-white">{l.title}</div>
-                    <div className="text-xs text-zinc-500 mt-1">{l.desc}</div>
+                    <div className="font-bold text-xl text-zinc-900">{l.title}</div>
+                    <div className="text-xs text-zinc-600 mt-1">{l.desc}</div>
                   </motion.button>
                 ))}
               </div>
@@ -385,15 +411,15 @@ export default function MagicHome() {
               <button
                 type="button"
                 onClick={goBackToLevel}
-                className="text-zinc-400 text-sm mb-4 self-start hover:text-white transition-colors"
+                className="text-zinc-600 text-sm mb-4 self-start hover:text-[#0052ff] transition-colors"
               >
                 ← Back
               </button>
               <div className="w-full text-center mb-4">
-                <h1 className="font-black text-3xl text-white uppercase tracking-tighter mb-2">
+                <h1 className="font-black text-3xl text-[#0052ff] uppercase tracking-tighter mb-2">
                   Day 1: The Contract
                 </h1>
-                <p className="text-zinc-400 text-lg">Post this. Then we verify. No excuses.</p>
+                <p className="text-zinc-600 text-lg">Post this. Then we verify. No excuses.</p>
               </div>
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -401,12 +427,12 @@ export default function MagicHome() {
                 transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 30 }}
                 className="magic-card w-full rounded-2xl mb-6"
               >
-                <p className="text-zinc-400 text-sm whitespace-pre-wrap">
+                <p className="text-zinc-700 text-sm whitespace-pre-wrap">
                   {`I'm in. Day 1 of building in public.\n\n#MagicInPublic #Base`}
                 </p>
               </motion.div>
               {verifyError && (
-                <p className="text-sm text-red-400 mb-2 text-center w-full">{verifyError}</p>
+                <p className="text-sm text-red-600 mb-2 text-center w-full">{verifyError}</p>
               )}
               <motion.button
                 initial={{ opacity: 0, y: 8 }}
