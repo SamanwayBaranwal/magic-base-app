@@ -1,18 +1,19 @@
 {
   "accountAssociation": {
     "header": "eyJmaWQiOjcxMTUwNiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDBDYzA2MTJlRTNCYzlmZGVGY0MwNTY3ODE1MjYzMDA2MDZEZTI0M0QifQ",
-    "payload": "eyJkb21haW4iOiI2MTRkLTEwMy04Ny01Ny0yNDUubmdyb2stZnJlZS5hcHAifQ",
-    "signature": "wNcJGF5BkqfIWhHCBw2UNaDX9QmgfTzTyOlrT03UJWcWWoHKQH+3YkTkmyzFi6am9ukhtIkNXCZYamcEtDVdLBw="
+    "payload": "eyJkb21haW4iOiJhZDgzLTEwMy04Ny01Ny0yNDUubmdyb2stZnJlZS5hcHAifQ",
+    "signature": "kRWFJP3KEeU/NaVKrOfZ0akb5h4b4+AODYxR53rjChFjWwcYudl3z8cQO2eq/4QTNqP5pf2vV27pmzZC/MjVBBs="
   },
   "frame": {
     "version": "1",
-    "name": "Example Frame",
-    "iconUrl": "https://614d-103-87-57-245.ngrok-free.app/icon.png",
-    "homeUrl": "https://614d-103-87-57-245.ngrok-free.app",
-    "imageUrl": "https://614d-103-87-57-245.ngrok-free.app/image.png",
-    "buttonTitle": "Check this out",
-    "splashImageUrl": "https://614d-103-87-57-245.ngrok-free.app/splash.png",
-    "splashBackgroundColor": "#eeccff",
-    "webhookUrl": "https://614d-103-87-57-245.ngrok-free.app/api/webhook"
+    "name": "Magic",
+    "iconUrl": "https://ad83-103-87-57-245.ngrok-free.app/icon.png",
+    "homeUrl": "https://ad83-103-87-57-245.ngrok-free.app",
+    "imageUrl": "https://ad83-103-87-57-245.ngrok-free.app/hero.png",
+    "buttonTitle": "Start Magic",
+    "splashImageUrl": "https://ad83-103-87-57-245.ngrok-free.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "webhookUrl": "https://ad83-103-87-57-245.ngrok-free.app/api/webhook",
+    "builder_address": "0x1B9B412726fb86eEf215eB4Ec9cEf58A095FDc38"
   }
 }

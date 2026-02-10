@@ -118,13 +118,21 @@ function SuccessCelebration({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-function ProfileSummaryCard({ fid }: { fid: number }) {
+function ProfileSummaryCard({ fid }: { fid: number | null }) {
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [pfp_url, setPfp_url] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(!!fid);
 
   useEffect(() => {
+    if (!fid) {
+      setDisplayName('Guest Builder');
+      setPfp_url(null);
+      setBio('Start your journey to build in public');
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -138,14 +146,15 @@ function ProfileSummaryCard({ fid }: { fid: number }) {
         }
       } catch {
         if (!cancelled) {
-          setDisplayName(null);
+          setDisplayName('Guest Builder');
           setPfp_url(null);
-          setBio(null);
+          setBio('Error loading profile');
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
+    
     load();
     return () => {
       cancelled = true;
@@ -153,32 +162,42 @@ function ProfileSummaryCard({ fid }: { fid: number }) {
   }, [fid]);
 
   return (
-    <div className="profile-card">
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-zinc-900/40 backdrop-blur-md border border-zinc-800 rounded-2xl p-4 w-full mb-6">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {pfp_url ? (
-            <img
-              src={pfp_url}
-              alt={displayName || 'Avatar'}
-              className="w-10 h-10 rounded-full border border-zinc-800"
-            />
+            <div className="relative">
+              <img
+                src={pfp_url}
+                alt={displayName || 'Avatar'}
+                className="w-12 h-12 rounded-full border-2 border-[#0052ff] object-cover"
+              />
+            </div>
           ) : (
-            <div className="w-10 h-10 rounded-full border border-zinc-800 bg-zinc-800 flex items-center justify-center">
-              <span className="text-zinc-500 text-xs">?</span>
+            <div className="w-12 h-12 rounded-full border-2 border-[#0052ff] bg-zinc-800 flex items-center justify-center">
+              <span className="text-zinc-400 text-sm">👤</span>
             </div>
           )}
           <div>
             <p className="text-sm font-semibold text-white">
-              {loading ? 'Loading...' : displayName || 'Anonymous'}
+              {loading ? 'Loading...' : displayName || 'Guest Builder'}
             </p>
-            {bio && <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{bio}</p>}
+            <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">
+              {loading ? 'Loading...' : bio || 'Start your journey to build in public'}
+            </p>
           </div>
         </div>
-        <span className="badge-verified">Verified</span>
+        {fid && (
+          <span className="bg-[#0052ff] text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+            Verified
+          </span>
+        )}
       </div>
-      <p className="text-xs text-zinc-500">
-        Daily Streak: <span className="font-semibold text-white">0 days</span>
-      </p>
+      {fid && (
+        <p className="text-xs text-zinc-400 mt-3">
+          Daily Streak: <span className="font-semibold text-white">0 days</span>
+        </p>
+      )}
     </div>
   );
 }
@@ -194,7 +213,7 @@ export default function MagicHome() {
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   const inMiniApp = isReady && context;
-  const fidForProfile = context?.user?.fid ?? 711506;
+  const fidForProfile = context?.user?.fid;
 
   useEffect(() => {
     if (inMiniApp && phase === 'PHASE_0') setPhase('PHASE_1_IDENTITY');
@@ -207,7 +226,11 @@ export default function MagicHome() {
   const goBackToLevel = useCallback(() => setPhase('PHASE_2_LEVEL'), []);
 
   const handlePostAndVerify = useCallback(async () => {
-    const fid = context?.user?.fid ?? 711506;
+    if (!context?.user?.fid) {
+      setVerifyError('Please connect your Farcaster account first');
+      return;
+    }
+    const fid = context.user.fid;
     setIsVerifying(true);
     setVerifyError(null);
     try {
@@ -292,7 +315,7 @@ export default function MagicHome() {
               <div className="w-full text-center mb-4">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Sparkles className="w-8 h-8 text-[#0052ff]" strokeWidth={1.5} />
-                  <h1 className="font-black text-4xl text-white uppercase tracking-tighter">
+                  <h1 className="font-black text-5xl text-white tracking-tighter">
                     {farcasterConfig.miniapp.name}
                   </h1>
                 </div>
