@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjcxMTUwNiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDBDYzA2MTJlRTNCYzlmZGVGY0MwNTY3ODE1MjYzMDA2MDZEZTI0M0QifQ",
+    "payload": "eyJkb21haW4iOiI2MTRkLTEwMy04Ny01Ny0yNDUubmdyb2stZnJlZS5hcHAifQ",
+    "signature": "wNcJGF5BkqfIWhHCBw2UNaDX9QmgfTzTyOlrT03UJWcWWoHKQH+3YkTkmyzFi6am9ukhtIkNXCZYamcEtDVdLBw="
+  },
+  "frame": {
+    "version": "1",
+    "name": "Example Frame",
+    "iconUrl": "https://614d-103-87-57-245.ngrok-free.app/icon.png",
+    "homeUrl": "https://614d-103-87-57-245.ngrok-free.app",
+    "imageUrl": "https://614d-103-87-57-245.ngrok-free.app/image.png",
+    "buttonTitle": "Check this out",
+    "splashImageUrl": "https://614d-103-87-57-245.ngrok-free.app/splash.png",
+    "splashBackgroundColor": "#eeccff",
+    "webhookUrl": "https://614d-103-87-57-245.ngrok-free.app/api/webhook"
+  }
+}

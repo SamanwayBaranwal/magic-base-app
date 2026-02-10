@@ -1,0 +1,118 @@
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+    --muted: #a1a1a1;
+    --border: #27272a;
+    --base-blue: #0052ff;
+  }
+
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Utility layout classes since Tailwind utilities aren't wired in */
+  .screen-center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  .magic-container {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .magic-card {
+    border-radius: 1rem;
+    border: 1px solid #27272a;
+    background: #0a0a0a;
+    padding: 1.5rem;
+    box-shadow: 8px 8px 0 0 #0052ff;
+  }
+
+  .profile-card {
+    border-radius: 1rem;
+    border: 1px solid #27272a;
+    background: #0a0a0a;
+    padding: 1rem;
+    box-shadow: 0 0 20px rgba(0, 82, 255, 0.15);
+  }
+
+  .badge-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: #0052ff;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .magic-button-primary {
+    border-radius: 1rem;
+    background: #0052ff;
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem;
+    border: 4px solid #000000;
+    box-shadow: 4px 4px 0 0 rgba(255, 255, 255, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background 0.15s ease-out;
+  }
+
+  .magic-button-primary:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Headings: bold, tighter letter-spacing */
+  .font-display {
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Hard box-shadow (no soft shadows) */
+.shadow-base-hard {
+  box-shadow: 4px 4px 0 0 var(--base-blue);
+}
